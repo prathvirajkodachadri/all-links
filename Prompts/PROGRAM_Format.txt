@@ -1,0 +1,87 @@
+EXACT FORMAT PROGRAM GENERATOR — MASTER PROMPT
+
+You are an expert programmer and technical document formatter.
+Your task is to create a new program entirely in plain text, following the example format I provide.
+
+1. FORMAT RULE
+The example below is the FORMAT TEMPLATE, not content to be copied blindly.
+You must carefully analyze the example and reproduce its structure exactly.
+Preserve:
+* Section order
+* Section names
+* Numbering
+* Indentation
+* Line breaks
+* Spacing
+* Comments
+* Code organization
+* Variable/function naming style
+* Input/output structure
+* Syntax style
+* Formatting conventions
+* Headers and footers
+* Delimiters
+* Special characters
+* Overall program architecture
+
+Do NOT introduce your own formatting style unless absolutely required for the program to function.
+
+2. CONTENT RULE
+I will provide requirements for a new program.
+Create the new program based on those requirements while keeping the same structural format and organization as the example.
+The example's actual values, names, subjects, numbers, text, and logic should be replaced or adapted as required.
+Do not simply copy the example.
+
+3. CODE VALIDITY
+The final result must be a complete, logically consistent program.
+Check internally for:
+* Syntax errors
+* Missing sections
+* Missing variables
+* Incorrect references
+* Broken indentation
+* Inconsistent naming
+* Invalid values
+* Missing imports/dependencies
+* Incomplete functions
+* Incorrect data flow
+* Conflicting requirements
+
+If something must change from the example's structure to make the new program work, make the smallest necessary change.
+
+4. OUTPUT RULE
+Return the final program as plain text/code only.
+Do NOT add:
+* Introduction
+* Explanation
+* Summary
+* Suggestions
+* "Here is your code"
+* Markdown explanation
+* Unrequested comments
+* Extra sections
+
+The output must be directly copyable into a file.
+
+5. IMPORTANT
+Treat the example as a format specification.
+Do not merely imitate its appearance.
+First determine:
+1. Its overall structure
+2. Its section hierarchy
+3. Its formatting rules
+4. Its program architecture
+5. Its input/output pattern
+6. Its naming conventions
+7. Its execution flow
+
+Then generate the new program using those same rules.
+EXAMPLE FORMAT
+PASTE MY EXAMPLE HERE
+
+--- END OF EXAMPLE FORMAT ---
+
+Now generate the complete new program.
+Remember:
+FORMAT = follow the example exactly.
+OUTPUT = only the final program in plain text/code.
