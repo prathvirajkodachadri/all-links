@@ -6,26 +6,71 @@ A local Python desktop application for measuring a final mix and its stems and p
 1. Upload one **MIX / FINAL MIX**.
 2. Upload all relevant **STEMS** and assign their roles.
 3. Optionally upload a **REFERENCE MIX**.
-4. Run **ANALYZE PROJECT**.
-5. Export the normal per-file JSON files and `MIX_ANALYSIS.json`.
-6. Use the ChatGPT-ready package when you want a complete evidence bundle for manual upload to ChatGPT.
+4. Click **ANALYZE PROJECT** and wait until analysis is fully complete.
+5. Use **EXPORT FOR CHATGPT** to create `ChatGPT_Mix_Analysis.zip` when you want the complete ChatGPT evidence bundle.
+6. Use **EXPORT STEM JSON** when you want only the individual stem measurement JSON files.
+
+The export buttons remain disabled until every selected file has been analyzed successfully. If any file fails, the application reports the failed file(s) and requires the project to be analyzed successfully before export. This prevents incomplete exports from being mistaken for complete project evidence.
 
 The analyzer is intentionally **not an embedded AI mixer**. It measures the audio. ChatGPT is the interpretation layer. This avoids API keys, API costs, and fabricated local AI decisions.
 
-## ChatGPT-ready evidence package
-The package generator in `analyzer/chatgpt_package.py` creates:
+## The three main actions
 
 ```text
-ChatGPT_Mix_Analysis/
-├── MIX_ANALYSIS.json
-├── CHATGPT_PROMPT.md
-└── stems/
-    ├── Kick.json
-    ├── Bass.json
-    └── ...
+ANALYZE PROJECT
+EXPORT FOR CHATGPT
+EXPORT STEM JSON
 ```
 
-It also creates `ChatGPT_Mix_Analysis.zip` for convenient manual upload. `MIX_ANALYSIS.json` uses schema version **3.0** and is organized around:
+### ANALYZE PROJECT
+Analyzes the final mix, all selected stems, and the optional reference mix. It also calculates deterministic project-level relationships and priority checks.
+
+### EXPORT FOR CHATGPT
+Creates:
+
+```text
+ChatGPT_Mix_Analysis.zip
+└── ChatGPT_Mix_Analysis/
+    ├── MIX_ANALYSIS.json
+    ├── CHATGPT_MIX_REVIEW_PROMPT.txt
+    ├── README_UPLOAD_TO_CHATGPT.txt
+    └── stems/
+        ├── Kick.json
+        ├── Bass.json
+        └── ...
+```
+
+`MIX_ANALYSIS.json` is the main evidence file for ChatGPT. The prompt is also included in the ZIP so the package is self-contained.
+
+Recommended manual upload order in ChatGPT:
+1. `CHATGPT_MIX_REVIEW_PROMPT.txt`
+2. `MIX_ANALYSIS.json`
+3. Individual stem JSON files if additional detail is needed.
+
+### EXPORT STEM JSON
+Exports one JSON file per successfully analyzed stem to a folder selected by the user. This is useful when a particular stem needs to be inspected separately or shared without the complete ChatGPT package.
+
+## Canonical ChatGPT prompt
+The permanent prompt is:
+
+`CHATGPT_MIX_REVIEW_PROMPT.txt`
+
+It is intentionally detailed but designed to remain under 10 A4 pages when rendered as normal text. It instructs ChatGPT to:
+
+- treat analyzer values as evidence rather than absolute truth
+- distinguish measured evidence, inference, action, and verification
+- prioritize the few changes most likely to improve the mix
+- use cross-stem relationships rather than isolated metrics
+- consider sections/time history and reference comparisons when available
+- recommend practical starting ranges without false precision
+- recommend industry-leading third-party plugins only when justified by evidence
+- provide plugin-specific starting settings, listening goals, and bypass criteria
+- exclude UAD plugins
+- avoid EQ/compression/saturation/widening by template
+- finish with a concise Mix V2 priority list of no more than seven actions
+
+## JSON evidence structure
+`MIX_ANALYSIS.json` uses schema version **3.0** and is organized around:
 
 - project metadata
 - complete mix measurements
@@ -38,8 +83,6 @@ It also creates `ChatGPT_Mix_Analysis.zip` for convenient manual upload. `MIX_AN
 - section/time analysis
 - deterministic technical priority checks
 - methodology and limitations
-
-`CHATGPT_PROMPT.md` tells ChatGPT to separate measured evidence from inference, avoid inventing facts, consider stem roles, rank the most important actions, use frequency/time regions when supported, and provide a verification plan for the next mix revision.
 
 ## Analysis coverage
 - Loudness / LUFS
