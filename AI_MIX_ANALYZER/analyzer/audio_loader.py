@@ -44,8 +44,6 @@ def _mapped_drive_unc(path):
     if not drive or not drive.endswith(':'):
         return None
     try:
-        # mpr.dll WNetGetConnectionW is preferable to parsing `net use`, because it
-        # asks Windows for the mapping associated with the current logon session.
         mpr = ctypes.WinDLL('mpr')
         fn = mpr.WNetGetConnectionW
         fn.argtypes = [ctypes.c_wchar_p, ctypes.c_wchar_p, ctypes.POINTER(ctypes.c_uint32)]
@@ -63,17 +61,13 @@ def _mapped_drive_unc(path):
 def _path_candidates(path):
     original = os.path.abspath(os.path.expanduser(str(path)))
     candidates = [original]
-
     unc = _mapped_drive_unc(original)
     if unc:
         candidates.append(unc)
-
     if os.name == 'nt' and not original.startswith('\\\\?\\'):
-        # Extended-length path syntax helps with Windows path-length edge cases.
         candidates.append('\\\\?\\' + original)
         if unc:
             candidates.append('\\\\?\\UNC\\' + unc.lstrip('\\'))
-
     seen = set()
     for candidate in candidates:
         key = candidate.casefold()
@@ -82,8 +76,20 @@ def _path_candidates(path):
             yield candidate
 
 
-def _diagnose_path(source):
-    drive, _ = os.path.splitdrive(str(source))
+def resolve_audio_path(path):
+    """Return an actually accessible path, including a mapped-drive UNC fallback."""
+    for candidate in _path_candidates(path):
+        try:
+            if os.path.isfile(candidate):
+                return candidate
+        except OSError:
+            continue
+    return None
+
+
+def diagnose_audio_path(path):
+    source = str(path)
+    drive, _ = os.path.splitdrive(source)
     if drive:
         try:
             if not os.path.exists(drive + os.sep):
@@ -132,8 +138,6 @@ def load_audio(path, blocksize=262144):
             if first_error is None:
                 first_error = exc
 
-    # If a directly accessible path exists but libsndfile cannot open it, retry through
-    # a local copy. This handles some network/filesystem locking cases.
     for candidate in attempted:
         temp_path = None
         try:
@@ -158,15 +162,8 @@ def load_audio(path, blocksize=262144):
                 except OSError:
                     pass
 
-    if not os.path.exists(source):
-        raise FileNotFoundError(
-            f'Audio file not accessible: {source}\n'
-            f'{_diagnose_path(source)}\n'
-            f'Attempted paths: {attempted}'
-        )
-
-    raise OSError(
-        f'Could not open audio file: {source}\n'
-        f'{type(first_error).__name__}: {first_error}\n'
-        f'{_diagnose_path(source)}'
+    raise FileNotFoundError(
+        f'Audio file not accessible: {source}\n'
+        f'{diagnose_audio_path(source)}\n'
+        f'Attempted paths: {attempted}'
     )
