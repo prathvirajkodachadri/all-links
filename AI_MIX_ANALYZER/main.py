@@ -12,7 +12,7 @@ class App(tk.Tk):
   super().__init__(); self.title('AI Audio Mixing & Mastering Analyzer'); self.geometry('1250x780'); self.configure(bg=BG); self.results={}; self.roles={}; self.data=None
   tk.Label(self,text='AI AUDIO MIXING & MASTERING ANALYZER',fg='white',bg=BG,font=('Segoe UI',20,'bold')).pack(pady=(14,2)); tk.Label(self,text='Upload one or many files — generate evidence ready for AI mixing decisions',fg=MUTED,bg=BG).pack(pady=(0,10))
   bar=tk.Frame(self,bg=BG); bar.pack()
-  for text,cmd in [('UPLOAD FILES',self.load),('ANALYZE ALL',self.analyze),('EVIDENCE JSON',self.brief),('EXPORT JSON',self.ejson),('EXPORT PDF',self.epdf),('EXPORT CSV',self.ecsv),('EXPORT ALL',self.eall),('SECTION CSV',self.esec),('TIME CSV',self.etime)]: tk.Button(bar,text=text,command=cmd,bg='#263449',fg='white',relief='flat',padx=15,pady=9).pack(side='left',padx=3)
+  for text,cmd in [('UPLOAD FILES',self.load),('ANALYZE ALL',self.analyze),('EVIDENCE JSON',self.brief),('EXPORT JSON — ALL STEMS',self.ejson),('EXPORT PDF',self.epdf),('EXPORT CSV',self.ecsv),('EXPORT ALL',self.eall),('SECTION CSV',self.esec),('TIME CSV',self.etime)]: tk.Button(bar,text=text,command=cmd,bg='#263449',fg='white',relief='flat',padx=15,pady=9).pack(side='left',padx=3)
   self.progress=ttk.Progressbar(self,length=380); self.progress.pack(pady=8)
   top=tk.Frame(self,bg=BG); top.pack(fill='x',padx=18)
   tk.Label(top,text='UPLOADED FILES',fg=MUTED,bg=BG,font=('Segoe UI',9,'bold')).pack(anchor='w'); self.files=tk.Listbox(top,height=4,bg='#171e28',fg=TEXT,selectbackground='#36506d',relief='flat'); self.files.pack(fill='x'); self.files.bind('<<ListboxSelect>>',self.select); rolebar=tk.Frame(top,bg=BG); rolebar.pack(fill='x',pady=4); tk.Label(rolebar,text='ROLE FOR SELECTED FILE:',fg=MUTED,bg=BG).pack(side='left'); self.role=ttk.Combobox(rolebar,values=['Other','Kick','Snare','Drums','Bass','Lead Vocal','Backing Vocal','Guitar','Piano','Synth','FX'],state='readonly',width=18); self.role.set('Other'); self.role.pack(side='left',padx=8); tk.Button(rolebar,text='ASSIGN ROLE',command=self.assign_role,bg='#263449',fg='white',relief='flat').pack(side='left')
@@ -93,9 +93,27 @@ class App(tk.Tk):
    p=filedialog.asksaveasfilename(defaultextension='.json',filetypes=[('AI brief','*.json')]);
    if p:save(done,p);self.status.set('Measurement evidence package exported.')
  def ejson(self):
-  if self.data:
-   p=filedialog.asksaveasfilename(defaultextension='.json');
-   if p:export_json(self.data,p)
+  done={p:d for p,d in self.results.items() if d and 'error' not in d}
+  if not done:
+   return messagebox.showinfo('Export JSON','Analyze the loaded stems first.')
+  folder=filedialog.askdirectory(title='Choose folder for JSON stem exports')
+  if not folder:return
+  exported=[]; failed=[]
+  for source_path,d in done.items():
+   try:
+    stem=os.path.splitext(os.path.basename(source_path))[0]
+    filename=f'{stem}.json'
+    target=os.path.join(folder,filename)
+    export_json(d,target)
+    exported.append(filename)
+   except Exception as exc:
+    failed.append(f'{os.path.basename(source_path)}: {type(exc).__name__}: {exc}')
+  if failed:
+   self.status.set(f'Exported {len(exported)} JSON file(s); {len(failed)} failed.')
+   messagebox.showerror('JSON export completed with errors','Exported:\n'+'\n'.join(exported)+'\n\nFailed:\n'+'\n'.join(failed))
+  else:
+   self.status.set(f'Exported {len(exported)} JSON file(s).')
+   messagebox.showinfo('JSON export complete',f'Exported {len(exported)} stem JSON file(s) to:\n{folder}\n\n'+'\n'.join(exported))
  def epdf(self):
   if self.data and 'error' not in self.data:
    p=filedialog.asksaveasfilename(defaultextension='.pdf',filetypes=[('PDF report','*.pdf')]);
