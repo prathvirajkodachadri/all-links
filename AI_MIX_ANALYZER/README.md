@@ -1,19 +1,29 @@
-# AI_MIX_ANALYZER — Professional Audio Measurement & Evidence Engine
+# AI_MIX_ANALYZER — Professional Audio Measurement & Mix Evidence Engine
 
-A local, deterministic Python desktop application for measuring audio stems and mixes. It exports objective JSON, CSV and PDF evidence for later interpretation by a human or external reasoning tool.
+A local Python desktop application for measuring a final mix and its stems and producing structured evidence for human or external AI interpretation.
 
-## It does
-- Decode supported audio and preserve source files
-- Measure loudness, true peak, RMS, crest factor and section dynamics
-- Measure spectrum, stereo, Mid/Side, correlation and technical QC
-- Compare cross-stem frequency overlap and role metadata
-- Export versioned measurement evidence
+## Project workflow
+1. Upload one **MIX / FINAL MIX**.
+2. Upload one or more **STEMS** separately.
+3. Optionally upload a **REFERENCE MIX**.
+4. Run **ANALYZE PROJECT**.
+5. Export JSON in one click.
 
-## It does not do
-- No LLM, AI SDK, cloud upload or API key
-- No mix score
-- No universal good/bad judgments
-- No mixing recommendations or automatic processing
+The project export includes individual audio JSON files plus `MIX_ANALYSIS.json` containing cross-stem relationships, mix-vs-stem comparisons, and deterministic priority checks.
+
+## Analysis
+- Loudness, true peak, RMS and crest factor
+- Spectrum and frequency-band evidence
+- Stereo, Mid/Side, correlation and mono compatibility
+- Section and time-history measurements
+- Cross-stem spectral overlap screening
+- Stem level relationships
+- Mix-vs-stem frequency-band comparison
+- Priority-ranked technical checks
+- Optional reference mix analysis
+
+## Important limitation
+Spectral overlap is a screening hypothesis, not definitive psychoacoustic masking. The analyzer does not claim to know the artistic intent of a mix and does not automatically apply processing or make irreversible creative decisions. Use the evidence with listening and engineering judgment.
 
 ## Run
 ```bash
@@ -26,7 +36,4 @@ python main.py
 pytest -q
 ```
 
-The primary machine-readable export is the versioned evidence JSON. Methodology and limitations are embedded in the package. Audio remains local.
-
-## Loudness methodology
-Loudness output is structured as integrated, momentary (400 ms), short-term (3 s), and LRA fields, each with timed histories and statistics. If `pyloudnorm` is installed, integrated loudness uses its BS.1770-compatible meter. Windowed histories are calculated independently from K-weighted energy windows and are not derived by averaging LUFS values. LRA is explicitly labeled as an EBU R 128 / Tech 3342-style estimate. Silence is represented by `null` plus `below_measurement_floor`, not an arbitrary loudness value. Channel-layout limitations and settings are included in the exported methodology.
+Audio remains local. The application does not contain an LLM, cloud upload, AI SDK, or API key.
