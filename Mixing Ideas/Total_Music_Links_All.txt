@@ -3,3 +3,7 @@ Cubase templates :
 
 https://forums.steinberg.net/t/sara-carters-mixing-template-cubase-version/976846
 https://audio-worx.com/index.php/en/download-templates-en/cubase-templates-en
+
+
+other: https://github.com/janminor/python-vstpreset/releases/tag/v0.1.0
+https://keycmds.com/vault
