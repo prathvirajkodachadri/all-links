@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Interactive CNC engineering formulas, calculations, units, ranges and design references.">
+  <title>CNC Engineering Formula Reference</title>
+  <style>
+    :root {
+      --navy: #1f507b;
+      --navy-dark: #173e61;
+      --navy-soft: #eaf2f8;
+      --blue: #2473aa;
+      --border: #d2d7dc;
+      --text: #111820;
+      --muted: #5f6b76;
+      --green: #159447;
+      --green-soft: #eaf7ef;
+      --red: #b42318;
+      --red-soft: #fff0ee;
+      --background: #f4f7f9;
+      --white: #fff;
+      --shadow: 0 16px 44px rgba(21, 47, 70, .18);
+      --row-height: 43px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--background);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 13px;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      min-height: 58px;
+      align-items: center;
+      gap: 18px;
+      padding: 8px 18px;
+      color: white;
+      background: var(--navy-dark);
+      border-bottom: 1px solid rgba(255, 255, 255, .15);
+      box-shadow: 0 3px 12px rgba(0, 0, 0, .18);
+    }
+
+    .brand {
+      display: flex;
+      min-width: max-content;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 36px;
+      height: 36px;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, .4);
+      border-radius: 7px;
+      background: linear-gradient(145deg, #327db4, #153d60);
+      font-weight: 800;
+      letter-spacing: -.5px;
+    }
+
+    .brand-copy strong {
+      display: block;
+      font-size: 14px;
+      letter-spacing: .2px;
+    }
+
+    .brand-copy span {
+      display: block;
+      margin-top: 2px;
+      color: #c9dbea;
+      font-size: 11px;
+    }
+
+    .header-search {
+      position: relative;
+      width: min(520px, 42vw);
+      margin-left: auto;
+    }
+
+    .header-search svg {
+      position: absolute;
+      top: 50%;
+      left: 12px;
+      width: 17px;
+      transform: translateY(-50%);
+      opacity: .68;
+    }
+
+    .header-search input {
+      width: 100%;
+      height: 38px;
+      padding: 0 40px 0 38px;
+      color: white;
+      background: rgba(255, 255, 255, .12);
+      border: 1px solid rgba(255, 255, 255, .24);
+      border-radius: 6px;
+      outline: none;
+    }
+
+    .header-search input::placeholder {
+      color: #d7e3ec;
+    }
+
+    .header-search input:focus {
+      background: rgba(255, 255, 255, .18);
+      border-color: #87b7da;
+      box-shadow: 0 0 0 3px rgba(81, 158, 213, .22);
+    }
+
+    .search-clear {
+      position: absolute;
+      top: 50%;
+      right: 6px;
+      display: none;
+      width: 28px;
+      height: 28px;
+      color: white;
+      background: transparent;
+      border: 0;
+      border-radius: 4px;
+      transform: translateY(-50%);
+    }
+
+    .search-clear:hover {
+      background: rgba(255, 255, 255, .12);
+    }
+
+    .header-action {
+      display: inline-flex;
+      height: 38px;
+      align-items: center;
+      gap: 7px;
+      padding: 0 12px;
+      color: white;
+      background: rgba(255, 255, 255, .1);
+      border: 1px solid rgba(255, 255, 255, .22);
+      border-radius: 6px;
+    }
+
+    .header-action:hover {
+      background: rgba(255, 255, 255, .18);
+    }
+
+    .header-action svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .toolbar {
+      position: sticky;
+      top: 58px;
+      z-index: 40;
+      display: flex;
+      min-height: 52px;
+      align-items: center;
+      gap: 9px;
+      padding: 7px 12px;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .toolbar-group.push {
+      margin-left: auto;
+    }
+
+    .control,
+    .tool-button {
+      min-height: 36px;
+      color: #263746;
+      background: white;
+      border: 1px solid #c7ced5;
+      border-radius: 5px;
+      outline: none;
+    }
+
+    .control {
+      min-width: 170px;
+      padding: 0 32px 0 10px;
+    }
+
+    .control:focus,
+    .tool-button:focus-visible {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(36, 115, 170, .14);
+    }
+
+    .tool-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 0 11px;
+      font-weight: 600;
+    }
+
+    .tool-button:hover {
+      background: #f0f5f8;
+      border-color: #9dafbd;
+    }
+
+    .tool-button.active {
+      color: #fff;
+      background: var(--navy);
+      border-color: var(--navy);
+    }
+
+    .tool-button svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .count {
+      min-width: 110px;
+      color: var(--muted);
+      text-align: right;
+      font-size: 12px;
+    }
+
+    .table-shell {
+      position: relative;
+      width: 100%;
+      min-height: calc(100vh - 110px);
+      overflow: auto;
+      background: white;
+    }
+
+    table {
+      width: 100%;
+      min-width: 1560px;
+      border-collapse: separate;
+      border-spacing: 0;
+      table-layout: fixed;
+      background: #fff;
+    }
+
+    col.id { width: 44px; }
+    col.category { width: 120px; }
+    col.name { width: 210px; }
+    col.formula { width: 225px; }
+    col.variables { width: 260px; }
+    col.unit { width: 90px; }
+    col.excel { width: 180px; }
+    col.relevance { width: 335px; }
+    col.range { width: 165px; }
+    col.reference { width: 135px; }
+
+    thead th {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      height: 43px;
+      padding: 7px 8px;
+      color: #fff;
+      background: var(--navy);
+      border-right: 1px solid #d8e3ec;
+      border-bottom: 1px solid #b8c3cc;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.2;
+      user-select: none;
+    }
+
+    thead th.sortable {
+      cursor: pointer;
+    }
+
+    thead th.sortable:hover {
+      background: #28618f;
+    }
+
+    .sort-mark {
+      margin-left: 4px;
+      color: #bcd5e7;
+      font-size: 9px;
+    }
+
+    tbody tr {
+      transition: background .12s ease;
+    }
+
+    tbody tr:hover {
+      background: #eef6fb;
+    }
+
+    tbody tr.selected {
+      background: #e5f1f9;
+      box-shadow: inset 3px 0 0 var(--blue);
+    }
+
+    td {
+      position: relative;
+      min-height: var(--row-height);
+      padding: 5px 6px;
+      vertical-align: middle;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      line-height: 1.28;
+      overflow-wrap: anywhere;
+    }
+
+    td:first-child,
+    th:first-child {
+      border-left: 1px solid var(--border);
+    }
+
+    td.id-cell {
+      padding-right: 4px;
+      text-align: right;
+      font-weight: 700;
+    }
+
+    td.category-cell {
+      color: #053d71;
+    }
+
+    td.formula-cell {
+      font-family: "Cambria Math", Cambria, Georgia, serif;
+      font-size: 14px;
+    }
+
+    td.unit-cell {
+      white-space: nowrap;
+    }
+
+    td.excel-cell {
+      padding-left: 15px;
+      color: #223645;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 11px;
+    }
+
+    td.excel-cell::before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-top: 7px solid var(--green);
+      border-right: 7px solid transparent;
+      content: "";
+    }
+
+    .category-tag {
+      display: inline-block;
+      color: #06457c;
+      font-weight: 500;
+    }
+
+    .empty-state {
+      display: none;
+      padding: 80px 20px;
+      color: var(--muted);
+      text-align: center;
+      background: white;
+    }
+
+    .empty-state strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text);
+      font-size: 18px;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: none;
+      background: rgba(8, 22, 34, .48);
+      backdrop-filter: blur(2px);
+    }
+
+    .overlay.open {
+      display: block;
+    }
+
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 90;
+      display: flex;
+      width: min(520px, 100%);
+      height: 100vh;
+      flex-direction: column;
+      background: #fff;
+      box-shadow: -20px 0 50px rgba(13, 34, 51, .22);
+      transform: translateX(105%);
+      transition: transform .24s ease;
+    }
+
+    .drawer.open {
+      transform: translateX(0);
+    }
+
+    .drawer-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 20px 20px 16px;
+      color: white;
+      background: var(--navy);
+    }
+
+    .drawer-heading {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .drawer-heading .eyebrow {
+      margin-bottom: 5px;
+      color: #c9ddeb;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .drawer-heading h2 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.25;
+    }
+
+    .drawer-close {
+      display: grid;
+      width: 35px;
+      height: 35px;
+      flex: 0 0 auto;
+      place-items: center;
+      color: #fff;
+      background: rgba(255, 255, 255, .1);
+      border: 1px solid rgba(255, 255, 255, .25);
+      border-radius: 6px;
+      font-size: 20px;
+    }
+
+    .drawer-close:hover {
+      background: rgba(255, 255, 255, .2);
+    }
+
+    .drawer-body {
+      flex: 1;
+      overflow: auto;
+      padding: 19px 20px 30px;
+    }
+
+    .formula-card {
+      padding: 18px;
+      background: #f4f8fb;
+      border: 1px solid #d5e2eb;
+      border-radius: 8px;
+    }
+
+    .formula-card .formula {
+      margin-bottom: 8px;
+      color: #123d5e;
+      font-family: "Cambria Math", Cambria, Georgia, serif;
+      font-size: 21px;
+    }
+
+    .formula-card .variables {
+      color: #52616e;
+      line-height: 1.5;
+    }
+
+    .drawer-section {
+      margin-top: 22px;
+    }
+
+    .drawer-section h3 {
+      margin: 0 0 10px;
+      color: #24445e;
+      font-size: 13px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .metadata {
+      display: grid;
+      grid-template-columns: 115px 1fr;
+      margin: 0;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      overflow: hidden;
+    }
+
+    .metadata dt,
+    .metadata dd {
+      margin: 0;
+      padding: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .metadata dt {
+      color: var(--muted);
+      background: #f7f9fa;
+      font-weight: 700;
+    }
+
+    .metadata dd {
+      border-left: 1px solid var(--border);
+    }
+
+    .metadata dt:last-of-type,
+    .metadata dd:last-of-type {
+      border-bottom: 0;
+    }
+
+    .calculator-message {
+      padding: 12px;
+      color: #4a5965;
+      background: #f7f8f9;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      line-height: 1.45;
+    }
+
+    .calc-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 5px;
+      color: #334a5d;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .field input {
+      width: 100%;
+      height: 40px;
+      padding: 0 48px 0 10px;
+      border: 1px solid #bcc7d0;
+      border-radius: 5px;
+      outline: none;
+    }
+
+    .field input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(36, 115, 170, .12);
+    }
+
+    .field .suffix {
+      position: absolute;
+      top: 50%;
+      right: 9px;
+      color: #71808b;
+      font-size: 11px;
+      pointer-events: none;
+      transform: translateY(-50%);
+    }
+
+    .calculate-button {
+      width: 100%;
+      height: 42px;
+      margin-top: 14px;
+      color: white;
+      background: var(--blue);
+      border: 0;
+      border-radius: 6px;
+      font-weight: 700;
+    }
+
+    .calculate-button:hover {
+      background: #1c6598;
+    }
+
+    .result-box {
+      display: none;
+      margin-top: 12px;
+      padding: 14px;
+      color: #15542e;
+      background: var(--green-soft);
+      border: 1px solid #a9dbba;
+      border-radius: 7px;
+    }
+
+    .result-box.error {
+      display: block;
+      color: var(--red);
+      background: var(--red-soft);
+      border-color: #f0bbb5;
+    }
+
+    .result-box.show {
+      display: block;
+    }
+
+    .result-value {
+      display: block;
+      margin-top: 4px;
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 120;
+      max-width: 340px;
+      padding: 12px 16px;
+      color: #fff;
+      background: #1d3445;
+      border-radius: 7px;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(14px);
+      transition: .2s ease;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .mobile-filter-button {
+      display: none;
+    }
+
+    @media (max-width: 900px) {
+      .app-header {
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 8px 10px;
+      }
+
+      .brand-copy span {
+        display: none;
+      }
+
+      .header-search {
+        order: 3;
+        width: 100%;
+      }
+
+      .header-action span {
+        display: none;
+      }
+
+      .header-action {
+        width: 38px;
+        padding: 0;
+        justify-content: center;
+      }
+
+      .toolbar {
+        top: 98px;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      .toolbar .desktop-filter {
+        display: none;
+      }
+
+      .mobile-filter-button {
+        display: inline-flex;
+      }
+
+      .count {
+        margin-left: auto;
+      }
+
+      table {
+        min-width: 1450px;
+      }
+
+      .table-shell {
+        min-height: calc(100vh - 150px);
+      }
+    }
+
+    @media (max-width: 560px) {
+      .brand-copy strong {
+        font-size: 12px;
+      }
+
+      .toolbar {
+        top: 98px;
+      }
+
+      .tool-button {
+        min-width: 36px;
+      }
+
+      .tool-button .button-label {
+        display: none;
+      }
+
+      .count {
+        min-width: 70px;
+      }
+
+      .drawer-header {
+        padding: 16px;
+      }
+
+      .drawer-body {
+        padding: 16px;
+      }
+
+      .calc-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media print {
+      .app-header,
+      .toolbar,
+      .overlay,
+      .drawer,
+      .toast {
+        display: none !important;
+      }
+
+      .table-shell {
+        overflow: visible;
+      }
+
+      table {
+        min-width: 0;
+        font-size: 8px;
+      }
+
+      thead th {
+        position: static;
+        color: white !important;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand" aria-label="CNC Formula Library">
+      <div class="brand-mark">CNC</div>
+      <div class="brand-copy">
+        <strong>Engineering Formula Library</strong>
+        <span>Machine design and process calculations</span>
+      </div>
+    </div>
+
+    <div class="header-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"></circle>
+        <path d="m20 20-4-4"></path>
+      </svg>
+      <input id="searchInput" type="search" placeholder="Search formulas, variables, references…" aria-label="Search formulas">
+      <button class="search-clear" id="clearSearch" type="button" aria-label="Clear search">×</button>
+    </div>
+
+    <button class="header-action" id="exportButton" type="button" title="Export filtered rows as CSV">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 3v12"></path>
+        <path d="m7 10 5 5 5-5"></path>
+        <path d="M5 21h14"></path>
+      </svg>
+      <span>Export CSV</span>
+    </button>
+
+    <button class="header-action" id="printButton" type="button" title="Print formula library">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M6 9V3h12v6"></path>
+        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+        <path d="M6 14h12v7H6z"></path>
+      </svg>
+      <span>Print</span>
+    </button>
+  </header>
+
+  <section class="toolbar" aria-label="Formula filters">
+    <div class="toolbar-group desktop-filter">
+      <select class="control" id="categoryFilter" aria-label="Filter by category">
+        <option value="">All categories</option>
+      </select>
+      <select class="control" id="unitFilter" aria-label="Filter by result unit">
+        <option value="">All result units</option>
+      </select>
+    </div>
+
+    <button class="tool-button mobile-filter-button" id="cycleCategory" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4 5h16M7 12h10M10 19h4"></path>
+      </svg>
+      <span class="button-label">Category</span>
+    </button>
+
+    <button class="tool-button" id="calculatorOnlyButton" type="button" aria-pressed="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="4" y="2" width="16" height="20" rx="2"></rect>
+        <path d="M8 6h8v4H8zM8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"></path>
+      </svg>
+      <span class="button-label">Calculators</span>
+    </button>
+
+    <button class="tool-button" id="densityButton" type="button" title="Toggle compact row spacing">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+      <span class="button-label">Compact</span>
+    </button>
+
+    <button class="tool-button" id="resetButton" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path>
+        <path d="M3 3v5h5"></path>
+      </svg>
+      <span class="button-label">Reset</span>
+    </button>
+
+    <div class="toolbar-group push">
+      <span class="count" id="resultCount">0 formulas</span>
+    </div>
+  </section>
+
+  <main class="table-shell" id="tableShell">
+    <table aria-label="CNC engineering formula reference">
+      <colgroup>
+        <col class="id">
+        <col class="category">
+        <col class="name">
+        <col class="formula">
+        <col class="variables">
+        <col class="unit">
+        <col class="excel">
+        <col class="relevance">
+        <col class="range">
+        <col class="reference">
+      </colgroup>
+      <thead>
+        <tr>
+          <th class="sortable" data-key="id">ID <span class="sort-mark">↕</span></th>
+          <th class="sortable" data-key="category">Category <span class="sort-mark">↕</span></th>
+          <th class="sortable" data-key="name">Formula Name <span class="sort-mark">↕</span></th>
+          <th>Symbolic Formula</th>
+          <th>Variables &amp; Units</th>
+          <th class="sortable" data-key="unit">Result Unit <span class="sort-mark">↕</span></th>
+          <th>Excel Formula Example</th>
+          <th>Design Relevance for CNC Engineer</th>
+          <th>Typical Range / Example</th>
+          <th>Reference</th>
+        </tr>
+      </thead>
+      <tbody id="formulaBody"></tbody>
+    </table>
+
+    <div class="empty-state" id="emptyState">
+      <strong>No formulas found</strong>
+      Adjust the filters or try a broader search term.
+    </div>
+  </main>
+
+  <div class="overlay" id="overlay"></div>
+
+  <aside class="drawer" id="detailDrawer" aria-hidden="true" aria-label="Formula details">
+    <div class="drawer-header">
+      <div class="drawer-heading">
+        <div class="eyebrow" id="drawerCategory">Category</div>
+        <h2 id="drawerTitle">Formula title</h2>
+      </div>
+      <button class="drawer-close" id="drawerClose" type="button" aria-label="Close details">×</button>
+    </div>
+    <div class="drawer-body">
+      <div class="formula-card">
+        <div class="formula" id="drawerFormula"></div>
+        <div class="variables" id="drawerVariables"></div>
+      </div>
+
+      <section class="drawer-section">
+        <h3>Engineering context</h3>
+        <dl class="metadata">
+          <dt>Result unit</dt><dd id="drawerUnit"></dd>
+          <dt>Typical range</dt><dd id="drawerRange"></dd>
+          <dt>Reference</dt><dd id="drawerReference"></dd>
+          <dt>Application</dt><dd id="drawerRelevance"></dd>
+          <dt>Excel</dt><dd id="drawerExcel"></dd>
+        </dl>
+      </section>
+
+      <section class="drawer-section" id="calculatorSection">
+        <h3>Interactive calculator</h3>
+        <div id="calculatorContent"></div>
+      </section>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const F = (id, category, name, formula, variables, unit, excel, relevance, range = "-", reference = "-", calc = null) =>
+      ({ id, category, name, formula, variables, unit, excel, relevance, range, reference, calc });
+
+    const formulas = [
+      F(1,"Cutting Speed","Cutting Speed (Metric)","Vc = π × D × N / 1000","D = tool diameter (mm), N = rpm, π = pi","m/min","=PI()*D2*N2/1000","Primary for spindle-speed selection and motor speed range","Aluminum 200–500; steel 80–250; wood 600–1200","ISO 3002",{fields:[["D","Tool diameter","mm",10],["N","Spindle speed","rpm",18000]],run:v=>Math.PI*v.D*v.N/1000}),
+      F(3,"Cutting Speed","Spindle Speed from Vc","N = 1000 × Vc / (π × D)","Vc = cutting speed (m/min), D = diameter (mm)","rpm","=1000*VC2/(PI()*D2)","Sizes spindle drive, VFD and belt ratio","CNC routers 6,000–24,000 rpm","ISO 3002",{fields:[["VC","Cutting speed","m/min",300],["D","Tool diameter","mm",10]],run:v=>1000*v.VC/(Math.PI*v.D)}),
+      F(4,"Feed","Feed Rate","Vf = fz × z × N","fz = mm/tooth, z = flutes, N = rpm","mm/min","=FZ2*Z2*N2","Feed-drive and interpolation limit check","1,000–15,000 mm/min","DIN 6580",{fields:[["FZ","Feed per tooth","mm",0.08],["Z","Number of flutes","",2],["N","Spindle speed","rpm",18000]],run:v=>v.FZ*v.Z*v.N}),
+      F(5,"Feed","Feed per Tooth","fz = Vf / (z × N)","Vf = mm/min, z = flutes, N = rpm","mm","=VF2/(Z2*N2)","Chip-load control for tool-breakage prevention","0.02–0.30 mm","Tool manufacturer",{fields:[["VF","Feed rate","mm/min",3000],["Z","Number of flutes","",2],["N","Spindle speed","rpm",18000]],run:v=>v.VF/(v.Z*v.N)}),
+      F(6,"Feed","Feed per Revolution","fn = Vf / N","Vf = feed rate (mm/min), N = rpm","mm/rev","=VF2/N2","Turning and drilling programming","0.05–0.60 mm/rev","ISO",{fields:[["VF","Feed rate","mm/min",1000],["N","Spindle speed","rpm",2500]],run:v=>v.VF/v.N}),
+      F(7,"Feed","Feed per Revolution from fz","fn = fz × z","fz = mm/tooth, z = engaged teeth","mm/rev","=FZ2*Z2","Converts milling feed to turning analogy","-","-"),
+      F(8,"Feed","Chip Thickness Milling","h = fz × sin(κr)","κr = entering angle in degrees","mm","=FZ2*SIN(RADIANS(KR2))","True chip load with entering angle","κr 45°–90°","ISO 3002",{fields:[["FZ","Feed per tooth","mm",0.1],["KR","Entering angle","°",45]],run:v=>v.FZ*Math.sin(v.KR*Math.PI/180)}),
+      F(9,"Feed","Average Chip Thickness","hm = fz × √(ae / D)","ae = width of cut (mm), D = diameter (mm)","mm","=FZ2*SQRT(AE2/D2)","Power calculations need hm, especially with small stepover","0.05–0.25 mm","Sandvik",{fields:[["FZ","Feed per tooth","mm",0.1],["AE","Width of cut","mm",4],["D","Tool diameter","mm",10]],run:v=>v.FZ*Math.sqrt(v.AE/v.D)}),
+      F(10,"Feed","Chip Thickness at Angle","h(ϕ) = fz × sin(ϕ)","ϕ = immersion angle","mm","=FZ2*SIN(RADIANS(PHI2))","Understanding entry and exit impacts","-","-"),
+      F(11,"MRR","MRR Milling","Q = ap × ae × Vf","ap = depth (mm), ae = width (mm), Vf = mm/min","mm³/min","=AP2*AE2*VF2","Core productivity metric for CNC router MRR","10,000–500,000","-",{fields:[["AP","Depth of cut","mm",3],["AE","Width of cut","mm",5],["VF","Feed rate","mm/min",4000]],run:v=>v.AP*v.AE*v.VF}),
+      F(12,"MRR","MRR in cm³/min","Qcm = Q / 1000","Q = material removal rate (mm³/min)","cm³/min","=Q2/1000","Catalog and process comparison","-","-",{fields:[["Q","MRR","mm³/min",60000]],run:v=>v.Q/1000}),
+      F(13,"MRR","MRR Milling to kg/min","Qkg = Q × ρ / 10⁶","Q = cm³/min, ρ = kg/m³","kg/min","=Q2*RHO2/1000000","Dust extraction sizing and production mass rate","-","-"),
+      F(15,"MRR","MRR Turning","Q = Vc × 1000 × fn × ap","Vc = m/min, fn = mm/rev, ap = mm","mm³/min","=VC2*1000*FN2*AP2","Lathe spindle power sizing","-","DIN",{fields:[["VC","Cutting speed","m/min",180],["FN","Feed per revolution","mm/rev",0.2],["AP","Depth of cut","mm",2]],run:v=>v.VC*1000*v.FN*v.AP}),
+      F(16,"MRR","MRR Alternative Turning","Q = π × Dm × ap × fn × N","Dm = average diameter (mm)","mm³/min","=PI()*DM2*AP2*FN2*N2","Check for varying workpiece diameter","-","-"),
+      F(17,"MRR","MRR Drilling","Q = πD² / 4 × Vf","D = drill diameter (mm), Vf = mm/min","mm³/min","=PI()*D2^2/4*VF2","Drilling cycle time and thrust assessment","-","-",{fields:[["D","Drill diameter","mm",8],["VF","Feed rate","mm/min",500]],run:v=>Math.PI*v.D*v.D/4*v.VF}),
+      F(18,"MRR","MRR CNC Router Slotting","Qslot = D × ap × Vf","D = tool diameter; ae equals D in full slot","mm³/min","=D2*AP2*VF2","Router full-width cut worst-case power","-","-"),
+      F(19,"MRR","MRR Router with Stepover","ae = D × stepover %","Stepover ratio = 0–1","mm","=D2*STEP2","Radial engagement for CAM settings","Typical 0.2–0.6","-"),
+      F(20,"MRR","MRR Facing","Qface = ae × ap × Vf","ae ≈ 0.8D for typical facing","mm³/min","=AE2*AP2*VF2","Roughing strategy comparison","-","-"),
+      F(21,"Force","Chip Cross Section","A = ap × fn (turning) or ap × fz","ap = depth in mm","mm²","=AP2*F2","Basis for cutting-force model","-","Kienzle"),
+      F(22,"Force","Tangential Cutting Force","Fc = Kc × A","Kc = N/mm², A = mm²","N","=KC2*A2","Sizes spindle bearings and tool shank","500–5,000 N","Kienzle",{fields:[["KC","Specific cutting force","N/mm²",1800],["A","Chip cross section","mm²",0.4]],run:v=>v.KC*v.A}),
+      F(23,"Force","Specific Cutting Force Correction","Kc,corr = Kc1.1 × hm^(−mc)","hm = average chip thickness; mc = exponent","N/mm²","=KC11*HM2^(-MC2)","Adjusts Kc for thin chips","Kc rises 30–100%","Kienzle"),
+      F(24,"Force","Corrected Milling Force","Fc = Kc,corr × ap × hm","ap and hm in mm","N","=KCC2*AP2*HM2","More accurate power estimate for small chips","-","-"),
+      F(25,"Force","Radial Force","Fr = Kr × Fc","Kr is typically 0.3–0.6","N","=KR2*FC2","Beam deflection and bearing radial load","-","-"),
+      F(26,"Force","Axial / Feed Force Milling","Fa = Ka × Fc","Ka is typically 0.2–0.5","N","=KA2*FC2","Ball-screw axial load","-","-"),
+      F(27,"Force","Thrust Force Drilling","Ff = 0.5 × Kc × D × fn × sin(κr/2)","κr = drill point angle","N","=0.5*KC2*D2*FN2*SIN(RADIANS(KR2/2))","Z-axis thrust and column bending","-","-"),
+      F(28,"Force","Force per Tooth","Fz = Fc / ze","ze = engaged teeth","N","=FC2/ZE2","Tool-edge strength check","-","-"),
+      F(29,"Power","Cutting Power","Pc = Fc × Vc / 60000","Fc = N, Vc = m/min","kW","=FC2*VC2/60000","Net cutting power at the tool","0.5–15 kW","ISO",{fields:[["FC","Cutting force","N",1000],["VC","Cutting speed","m/min",250]],run:v=>v.FC*v.VC/60000}),
+      F(30,"Power","Cutting Power (HP)","Pchp = Fc × Vc(ft/min) / 33000","Imperial horsepower calculation","HP","=FC2*VCFT2/33000","Imperial motor specification","-","-"),
+      F(31,"Power","Milling Power Formula","Pc = ap × ae × Vf × Kc / (60 × 10⁶)","Vf = mm/min","kW","=AP2*AE2*VF2*KC2/60000000","Direct from material removal rate","-","Sandvik"),
+      F(32,"Power","Gross Power Required","Pg = Pc / η","η = efficiency, typically 0.70–0.85","kW","=PC2/ETA2","Select motor rating with design margin","-","-",{fields:[["PC","Cutting power","kW",5],["ETA","Efficiency","",0.8]],run:v=>v.PC/v.ETA}),
+      F(33,"Power","Specific Cutting Energy","U = Pc × 60 × 10⁶ / Q","Q = mm³/min, Pc = kW","J/mm³","=PC2*60000000/Q2","Validates material-specific cutting load","-","-"),
+      F(34,"Torque","Spindle Torque from Power","T = Pc × 9550 / N","Pc = kW, N = rpm","N·m","=PC2*9550/N2","Torque curve versus S1/S6 duty","High at low rpm","-",{fields:[["PC","Spindle power","kW",7.5],["N","Spindle speed","rpm",12000]],run:v=>v.PC*9550/v.N}),
+      F(35,"Torque","Spindle Torque from Force","T = Fc × D / (2 × 1000)","D = mm, Fc = N","N·m","=FC2*D2/2000","Direct tool-diameter effect","-","-"),
+      F(36,"Torque","Drilling Torque","Md = Fc,drill × D / 2","Use radius in metres for N·m","N·m","=FC2*D2/2000","Drill spindle and holder sizing","-","-"),
+      F(37,"Torque","Acceleration Torque Motor","Ta = Jtotal × α","J = kg·m², α = rad/s²","N·m","=J2*ALPHA2","Servo sizing for rapid acceleration","-","-"),
+      F(38,"Torque","Load Torque Ball Screw","Tl = Ftotal × lead / (2πη)","F = N, lead = m","N·m","=F2*LEAD2/(2*PI()*ETA2)","Motor continuous-torque requirement","-","-"),
+      F(40,"Inertia","Solid Cylinder Inertia","J = πρL D⁴ / 32","ρ = kg/m³, L and D in metres","kg·m²","=PI()*RHO2*L2*D2^4/32","Screw and spindle inertia for servo tuning","-","-"),
+      F(41,"Ball Screw","Feed Rate from Screw RPM","Vf = lead × Ns","lead = mm/rev, Ns = rpm","mm/min","=LEAD2*NS2","Sets maximum rapid rate","Routers 20,000–30,000 mm/min","-",{fields:[["LEAD","Screw lead","mm/rev",10],["NS","Screw speed","rpm",2500]],run:v=>v.LEAD*v.NS}),
+      F(42,"Ball Screw","Required Screw RPM","Ns = Vf / lead","Vf = mm/min, lead = mm/rev","rpm","=VF2/LEAD2","Check against critical speed","-","-"),
+      F(43,"Ball Screw","Critical Speed Screw","Nc = (60λ² / 2πL²) × √(EI / ρA)","λ depends on bearing support condition","rpm","=(60*LAMBDA2^2/(2*PI()*L2^2))*SQRT(E2*I2/(RHO2*A2))","Limit for long screws and high rapids","Support condition matters","ISO"),
+      F(44,"Ball Screw","Moment of Inertia Screw","Iarea = πd⁴ / 64","d = root diameter (mm)","mm⁴","=PI()*D2^4/64","Buckling and critical-speed calculation","-","-"),
+      F(45,"Ball Screw","Cross Section Area Screw","A = πd² / 4","d = root diameter (mm)","mm²","=PI()*D2^2/4","Tensile stiffness","-","-"),
+      F(46,"Ball Screw","Axial Stiffness Screw","Ks = A × E / L","E = MPa, L = mm","N/mm","=A2*E2/L2","Static rigidity in the feed direction","Target >500 N/µm system","-"),
+      F(47,"Ball Screw","Buckling Load Screw","Fcr = nπ²EI / L²","n = end-condition factor","N","=N2*PI()^2*E2*I2/L2^2","Compressive limit of a long screw","Keep below 50% Fcr","-"),
+      F(48,"Ball Screw","Drive Axial Force","Ftotal = Fc,axial + μWg + ma","W = moving mass (kg)","N","=FC2+MU2*W2*9.81+W2*A2","Total force for motor sizing","-","-"),
+      F(49,"Ball Screw","Feed Acceleration","a = ΔVf / (60 × ta)","ta = acceleration time (s)","m/s²","=VF2/60/TA2/1000","Acceleration target for router gantries","2–10 m/s²","-"),
+      F(51,"Linear Guide","Friction Force Guides","Ff = μ × M × g","μ ≈ 0.004–0.01","N","=MU2*M2*9.81","Continuous load component","-","THK",{fields:[["MU","Friction coefficient","",0.006],["M","Moving mass","kg",400]],run:v=>v.MU*v.M*9.81}),
+      F(52,"Linear Guide","Guide Life Distance","L = (C / P)³ × 50","C = dynamic rating, P = load","km","=(C2/P2)^3*50","Travel-life target above 20,000 km","-","ISO 14728"),
+      F(53,"Linear Guide","Guide Life Hours","Lh = L × 1000 / (2Ls × 60n)","Ls = stroke (m), n = strokes/min","h","=L2*1000/(2*LS2*60*N2)","Maintenance interval estimate","-","-"),
+      F(54,"Linear Guide","Static Safety Factor","fs = C0 / P0","C0 = static rating, P0 = equivalent load","-","=C02/P02","Impact loads require fs > 2–3","-","-"),
+      F(55,"Feed Drives","Positioning Resolution","Res = lead / (4 × encoder counts)","Encoder with quadrature decoding","mm","=LEAD2/(4*ENC2)","Positioning accuracy budget","0.001 mm","-"),
+      F(56,"Feed Drives","Encoder Pulses per mm","Pulses = encoder counts / lead","Encoder pulses/rev and screw lead","pulses/mm","=ENC2/LEAD2","Electronic gearing setup","-","-"),
+      F(57,"Feed Drives","Following Error","e = Vf / (60 × Kv)","Kv = position-loop gain (1/s)","mm","=VF2/(60*KV2)","Contour error estimate","Kv 20–50 1/s","-"),
+      F(58,"Feed Drives","Distance During Acceleration","Sa = Vf × ta / 120","Vf = mm/min, ta = seconds","mm","=VF2*TA2/120","Rapid-profile check","-","-"),
+      F(59,"Servo","Angular Acceleration of Screw","α = 2πa / lead","a = m/s², lead = m","rad/s²","=2*PI()*A2/LEAD2","Converts linear acceleration to rotary","-","-"),
+      F(60,"Servo","Linear Acceleration Time","ta = (Vs − Ve) / a","Speed values in m/s","s","=(VS2-VE2)/A2","S-curve motion planning","-","-"),
+      F(61,"Spindle","DN Value","DN = Dm × N","Dm = bearing mean diameter (mm), N = rpm","mm·rpm","=DM2*N2","Bearing grease and oil speed limit","Check bearing catalog","-"),
+      F(62,"Spindle","Bearing L10 Life Revolutions","L10 = (C / P)^p × 10⁶","p = 3 ball; 10/3 roller","10⁶ rev","=(C2/P2)^PWR2","Bearing-life target above 20,000 h","-","ISO 281"),
+      F(63,"Spindle","Bearing L10h Hours","L10h = 10⁶/(60N) × (C/P)^p","N = rpm","h","=1000000/(60*N2)*(C2/P2)^PWR2","Spindle bearing MTBF input","-","ISO 281"),
+      F(64,"Spindle","Spindle Deflection Simple","δ = F × L³ / (48EI)","Simply supported shaft approximation","mm","=F2*L2^3/(48*E2*I2)","Spindle nose compliance","Target <0.02 mm at 1 kN","Mechanics"),
+      F(65,"Spindle","Cantilever Deflection","δ = F × a²(L + a) / (3EI)","a = overhang","mm","=F2*A2^2*(L2+A2)/(3*E2*I2)","More realistic spindle-overhang model","-","Mechanics"),
+      F(66,"Spindle","System Stiffness","K = F / δ","F = N, δ = µm","N/µm","=F2/DELTA2","Converts measured displacement to stiffness","Target >100 N/µm","-",{fields:[["F","Applied force","N",1000],["DELTA","Deflection","µm",10]],run:v=>v.F/v.DELTA}),
+      F(68,"Structural","Thermal Expansion","ΔL = α × L × ΔT","α = µm/m°C, L = m, ΔT = °C","mm","=ALPHA2*L2*DT2/1000","Ball-screw and scale thermal error source","Steel α ≈ 12 µm/m°C","-",{fields:[["ALPHA","Expansion coefficient","µm/m°C",12],["L","Length","m",2],["DT","Temperature change","°C",8]],run:v=>v.ALPHA*v.L*v.DT/1000}),
+      F(69,"Structural","Beam Deflection Cantilever","δ = F × L³ / (3EI)","F = end load; L = beam length","mm","=F2*L2^3/(3*E2*I2)","Gantry and cantilever compliance","-","Mechanics"),
+      F(70,"Structural","Second Moment Rectangle","I = b × h³ / 12","b and h in mm","mm⁴","=B2*H2^3/12","Quick section design","-","-",{fields:[["B","Section width","mm",100],["H","Section height","mm",200]],run:v=>v.B*Math.pow(v.H,3)/12}),
+      F(71,"Structural","Second Moment Tube","I = π(D⁴ − d⁴) / 64","D = outside diameter, d = inside diameter","mm⁴","=PI()*(D2^4-DI2^4)/64","Lightweight column and spindle design","-","-"),
+      F(72,"Structural","Natural Frequency Single DOF","fn = 1/(2π) × √(k/m)","k = N/m, m = kg","Hz","=1/(2*PI())*SQRT(K2/M2)","Avoid excitation at machine natural frequency","Target >50 Hz","-",{fields:[["K","Stiffness","N/m",10000000],["M","Modal mass","kg",100]],run:v=>1/(2*Math.PI)*Math.sqrt(v.K/v.M)}),
+      F(73,"Structural","Critical Damping","cc = 2√(km)","k = N/m, m = kg","N·s/m","=2*SQRT(K2*M2)","Damping-design reference","-","-"),
+      F(74,"Structural","Damping Ratio","ζ = c / cc","c = measured damping coefficient","-","=C2/CC2","Tap-test target around 0.03–0.08","-","-"),
+      F(75,"Structural","Static Compliance","C = 1 / K","K = stiffness","µm/N","=1/K2","Inverse of stiffness","-","-"),
+      F(76,"Structural","Chatter Stability Limit","blim = −1 / (2Kf Re[G])","Kf = cutting coefficient; G = FRF","mm","=-1/(2*KF2*REG2)","Foundation of stability-lobe diagrams","-","Altintas"),
+      F(77,"Dynamics","Spindle Passing Frequency","ftooth = N × z / 60","N = rpm, z = tooth count","Hz","=N2*Z2/60","Compare with natural frequency to avoid chatter","-","-",{fields:[["N","Spindle speed","rpm",18000],["Z","Number of teeth","",2]],run:v=>v.N*v.Z/60}),
+      F(78,"Dynamics","Cutting Force Excitation Frequency","f = Vf / pitch","Vf converted to mm/s, pitch in mm","Hz","=VF2/60/PITCH2","Periodic excitation from tooth or surface pitch","-","-"),
+      F(79,"Tool Life","Taylor Tool Life","V × Tⁿ = C","V = cutting speed, T = minutes","-","=V2*T2^N2","First-order tool life model","n = 0.2–0.5 carbide","Taylor"),
+      F(80,"Tool Life","Extended Taylor","V × Tⁿ × apˣ × fnʸ = C","Includes depth and feed effects","-","=V2*T2^N2*AP2^X2*FN2^Y2","More variables for process optimization","-","-"),
+      F(81,"Tool Life","Tool Life from Vc","T = (C / Vc)^(1/n)","C and n from tests or catalog","min","=(C2/VC2)^(1/N2)","Predicts remaining tool life","-","Taylor"),
+      F(82,"Tool Life","Taylor Vc for Target Life","Vc,target = C / Tⁿ","T = target life in minutes","m/min","=C2/T2^N2","CAM default speed for target life","-","Taylor"),
+      F(83,"Surface","Theoretical Turning Roughness","Ra = fn² / (32re) × 1000","re = nose radius (mm), fn = mm/rev","µm","=FN2^2/(32*RE2)*1000","Nose radius dominates turned finish","About 0.4–3.2 µm","-",{fields:[["FN","Feed per revolution","mm/rev",0.15],["RE","Nose radius","mm",0.8]],run:v=>v.FN*v.FN/(32*v.RE)*1000}),
+      F(84,"Surface","Ball Nose Scallop Roughness","Ra ≈ fz² / (32R)","R = ball-nose radius","µm","=FZ2^2/(32*R2)*1000","Ball-nose finishing estimate","-","-"),
+      F(85,"Surface","Cusp Height (Stepover)","hcusp = ae² / (8R)","ae = stepover, R = tool radius","mm","=AE2^2/(8*R2)","Scallop control for 3D finishing","0.01–0.05 mm","-"),
+      F(86,"Surface","Cusp Height Flat End Mill","h = D/2 − √((D/2)² − (ae/2)²)","Geometric residual height","mm","=D2/2-SQRT((D2/2)^2-(AE2/2)^2)","Flat-cutter residue estimate","-","-"),
+      F(88,"Cycle","Cutting Length Time","Tc = L / Vf","L = cutting length, Vf = feed rate","min","=L2/VF2","Basic cycle estimate","-","-",{fields:[["L","Cutting length","mm",5000],["VF","Feed rate","mm/min",4000]],run:v=>v.L/v.VF}),
+      F(89,"Cycle","Drilling Time","Tc = (depth + approach) / Vf","Approach commonly 0.3D","min","=(DEPTH2+APP2)/VF2","Peck drilling multiplies this base time","-","-"),
+      F(90,"Cycle","Total Cycle Time","Ttotal = Tc + Trapid + Ttoolchange + Tidle","All components in minutes","min","=SUM(TC2,TR2,TT2,TI2)","OEE base; rapid contribution often estimated","-","-"),
+      F(91,"Cycle","Rapid Time Trapezoidal","Trapid = ta + td + (Dist − Sa − Sd) / Vrapid","Acceleration and deceleration included","s","=TA2+TD2+(DIST2-SA2-SD2)/VR2","More accurate for long moves","-","-"),
+      F(92,"Economy","Material Removal Power per Volume","Q / Pc","Q = mm³/min; Pc = kW","mm³/kW·min","=Q2/PC2","Energy-efficiency KPI","-","-"),
+      F(93,"Economy","Cost per Volume","CpV = (machine rate + tool wear) / Q","Use consistent time and volume units","$/cm³","=(RATE2+WEAR2)/Q2","Quoting and job comparison","-","-"),
+      F(94,"Tolerance","Circular Interpolation Error","ΔR ≈ following error² / (8R)","Approximation for servo mismatch","mm","=E2^2/(8*R2)","Servo mismatch and roundness","<0.01 mm","-"),
+      F(95,"Accuracy","Squareness Error over Length","θ = arctan(ΔY / L)","ΔY and L in the same unit","rad","=ATAN(DY2/L2)","Geometry alignment specification","<0.02 mm/m","ISO 230"),
+      F(96,"Accuracy","Straightness Error per ISO 230","Maximum deviation over measured stroke","Laser or straightedge measurement","mm","=MAX(RANGE)-MIN(RANGE)","Machine laser measurement","-","ISO 230"),
+      F(97,"Thermal","Heat Generated at Bearing","Hb = μb × P × v","μb = friction coefficient","W","=MUB2*P2*V2","Spindle thermal-growth source","-","-"),
+      F(98,"Pneumatic","Clamping Force Hydraulic","F = p × A","p = MPa, A = mm²","N","=P2*A2","Tool clamping and workholding","4–6 bar pneumatic","-",{fields:[["P","Pressure","MPa",0.6],["A","Piston area","mm²",2000]],run:v=>v.P*v.A}),
+      F(99,"Electrical","Required Spindle Motor Current","I = Pc × 1000 / (√3 × V × pf × η)","Three-phase supply","A","=PC2*1000/(SQRT(3)*V2*PF2*ETA2)","VFD and cable sizing","-","IEC"),
+      F(100,"Design","Gantry Mass Estimate","M = Σ(Li × Ai × ρ) × 1.3","Factor includes fasteners and fittings","kg","=SUMPRODUCT(L,A)*RHO2*1.3","Early inertia and motor-sizing estimate","Steel 7,850 kg/m³","-"),
+      F(101,"Design","Linear Motor Force Requirement","F = ma + Fc","m = moving mass, a = acceleration","N","=M2*A2+FC2","Linear-motor versus ball-screw trade study","-","-"),
+      F(102,"Design","Drive Belt Ratio","i = Nmotor / Nspindle","Speed ratio; verify torque multiplication","-","=NM2/NS2","Spindle belt-stage selection","-","-"),
+      F(103,"Design","Pulley Center Distance Approximation","C estimated from belt length and pulley diameters","Use belt manufacturer equations","mm","-","Spindle packaging and space layout","-","-"),
+      F(104,"Safety","Cutting Edge Engagement Angle","ϕex = arccos(1 − 2ae / D)","ae and D in mm","deg","=DEGREES(ACOS(1-2*AE2/D2))","High engagement can cause slotting heat","Avoid >90° for light tools","ISO 3002",{fields:[["AE","Radial width of cut","mm",4],["D","Tool diameter","mm",10]],run:v=>Math.acos(1-2*v.AE/v.D)*180/Math.PI}),
+      F(105,"Safety","Allowable Tool Bending Stress","σ = 32M / (πd³) ≤ σallow","M = Nmm, d = mm","MPa","=32*M2/(PI()*D2^3)","Tool-shank breakage assessment","Carbide often 800 MPa design limit","-")
+    ];
+
+    const body = document.getElementById("formulaBody");
+    const searchInput = document.getElementById("searchInput");
+    const clearSearch = document.getElementById("clearSearch");
+    const categoryFilter = document.getElementById("categoryFilter");
+    const unitFilter = document.getElementById("unitFilter");
+    const resultCount = document.getElementById("resultCount");
+    const emptyState = document.getElementById("emptyState");
+    const drawer = document.getElementById("detailDrawer");
+    const overlay = document.getElementById("overlay");
+    const calcOnlyButton = document.getElementById("calculatorOnlyButton");
+    const densityButton = document.getElementById("densityButton");
+    const toast = document.getElementById("toast");
+
+    let sortState = { key: "id", direction: 1 };
+    let calculatorOnly = false;
+    let compact = false;
+    let visibleRows = formulas.slice();
+    let selectedId = null;
+
+    const categories = [...new Set(formulas.map(row => row.category))].sort();
+    const units = [...new Set(formulas.map(row => row.unit).filter(unit => unit !== "-"))].sort();
+
+    categories.forEach(category => categoryFilter.add(new Option(category, category)));
+    units.forEach(unit => unitFilter.add(new Option(unit, unit)));
+
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, character => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+      })[character]);
+    }
+
+    function getFilteredRows() {
+      const query = searchInput.value.trim().toLowerCase();
+      const category = categoryFilter.value;
+      const unit = unitFilter.value;
+
+      const rows = formulas.filter(row => {
+        const searchable = Object.values(row)
+          .filter(value => typeof value === "string" || typeof value === "number")
+          .join(" ")
+          .toLowerCase();
+
+        return (!query || searchable.includes(query))
+          && (!category || row.category === category)
+          && (!unit || row.unit === unit)
+          && (!calculatorOnly || row.calc);
+      });
+
+      return rows.sort((a, b) => {
+        const first = a[sortState.key];
+        const second = b[sortState.key];
+        if (typeof first === "number") return (first - second) * sortState.direction;
+        return String(first).localeCompare(String(second)) * sortState.direction;
+      });
+    }
+
+    function render() {
+      visibleRows = getFilteredRows();
+      body.innerHTML = visibleRows.map(row => `
+        <tr data-id="${row.id}" tabindex="0" aria-label="Open ${escapeHTML(row.name)} details" class="${selectedId === row.id ? "selected" : ""}">
+          <td class="id-cell">${row.id}</td>
+          <td class="category-cell"><span class="category-tag">${escapeHTML(row.category)}</span></td>
+          <td>${escapeHTML(row.name)}</td>
+          <td class="formula-cell">${escapeHTML(row.formula)}</td>
+          <td>${escapeHTML(row.variables)}</td>
+          <td class="unit-cell">${escapeHTML(row.unit)}</td>
+          <td class="excel-cell">${escapeHTML(row.excel)}</td>
+          <td>${escapeHTML(row.relevance)}</td>
+          <td>${escapeHTML(row.range)}</td>
+          <td>${escapeHTML(row.reference)}</td>
+        </tr>
+      `).join("");
+
+      resultCount.textContent = `${visibleRows.length} formula${visibleRows.length === 1 ? "" : "s"}`;
+      emptyState.style.display = visibleRows.length ? "none" : "block";
+      clearSearch.style.display = searchInput.value ? "block" : "none";
+
+      body.querySelectorAll("tr").forEach(rowElement => {
+        rowElement.addEventListener("click", () => openDrawer(Number(rowElement.dataset.id)));
+        rowElement.addEventListener("keydown", event => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            openDrawer(Number(rowElement.dataset.id));
+          }
+        });
+      });
+    }
+
+    function openDrawer(id) {
+      const row = formulas.find(item => item.id === id);
+      if (!row) return;
+      selectedId = id;
+
+      document.getElementById("drawerCategory").textContent = `ID ${row.id} · ${row.category}`;
+      document.getElementById("drawerTitle").textContent = row.name;
+      document.getElementById("drawerFormula").textContent = row.formula;
+      document.getElementById("drawerVariables").textContent = row.variables;
+      document.getElementById("drawerUnit").textContent = row.unit;
+      document.getElementById("drawerRange").textContent = row.range;
+      document.getElementById("drawerReference").textContent = row.reference;
+      document.getElementById("drawerRelevance").textContent = row.relevance;
+      document.getElementById("drawerExcel").textContent = row.excel;
+
+      buildCalculator(row);
+
+      drawer.classList.add("open");
+      overlay.classList.add("open");
+      drawer.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+      render();
+      setTimeout(() => document.getElementById("drawerClose").focus(), 40);
+    }
+
+    function closeDrawer() {
+      drawer.classList.remove("open");
+      overlay.classList.remove("open");
+      drawer.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+      selectedId = null;
+      render();
+    }
+
+    function buildCalculator(row) {
+      const content = document.getElementById("calculatorContent");
+
+      if (!row.calc) {
+        content.innerHTML = `
+          <div class="calculator-message">
+            This reference currently provides the equation and Excel syntax. Use the listed variables with consistent units to calculate the result.
+          </div>
+        `;
+        return;
+      }
+
+      content.innerHTML = `
+        <form id="calculatorForm">
+          <div class="calc-grid">
+            ${row.calc.fields.map(([key, label, suffix, defaultValue]) => `
+              <div class="field">
+                <label for="calc_${key}">${escapeHTML(label)}</label>
+                <div class="input-wrap">
+                  <input id="calc_${key}" name="${escapeHTML(key)}" type="number" step="any" value="${defaultValue}" required>
+                  <span class="suffix">${escapeHTML(suffix)}</span>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+          <button class="calculate-button" type="submit">Calculate ${escapeHTML(row.unit)}</button>
+          <div class="result-box" id="resultBox" role="status"></div>
+        </form>
+      `;
+
+      document.getElementById("calculatorForm").addEventListener("submit", event => {
+        event.preventDefault();
+        const values = {};
+        let valid = true;
+
+        row.calc.fields.forEach(([key]) => {
+          const value = Number(document.getElementById(`calc_${key}`).value);
+          if (!Number.isFinite(value)) valid = false;
+          values[key] = value;
+        });
+
+        const resultBox = document.getElementById("resultBox");
+
+        try {
+          const result = valid ? row.calc.run(values) : NaN;
+          if (!Number.isFinite(result)) throw new Error("Invalid calculation");
+
+          const formatted = Math.abs(result) >= 1000000
+            ? result.toExponential(4)
+            : new Intl.NumberFormat(undefined, { maximumFractionDigits: 6 }).format(result);
+
+          resultBox.className = "result-box show";
+          resultBox.innerHTML = `Calculated result<span class="result-value">${formatted} ${escapeHTML(row.unit)}</span>`;
+        } catch {
+          resultBox.className = "result-box error";
+          resultBox.textContent = "Check the input values. Divisors must not be zero and values must remain within the equation domain.";
+        }
+      });
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.remove("show"), 2600);
+    }
+
+    searchInput.addEventListener("input", render);
+    categoryFilter.addEventListener("change", render);
+    unitFilter.addEventListener("change", render);
+
+    clearSearch.addEventListener("click", () => {
+      searchInput.value = "";
+      searchInput.focus();
+      render();
+    });
+
+    document.querySelectorAll("th.sortable").forEach(header => {
+      header.addEventListener("click", () => {
+        const key = header.dataset.key;
+        if (sortState.key === key) {
+          sortState.direction *= -1;
+        } else {
+          sortState = { key, direction: 1 };
+        }
+
+        document.querySelectorAll(".sort-mark").forEach(mark => mark.textContent = "↕");
+        header.querySelector(".sort-mark").textContent = sortState.direction === 1 ? "▲" : "▼";
+        render();
+      });
+    });
+
+    calcOnlyButton.addEventListener("click", () => {
+      calculatorOnly = !calculatorOnly;
+      calcOnlyButton.classList.toggle("active", calculatorOnly);
+      calcOnlyButton.setAttribute("aria-pressed", String(calculatorOnly));
+      render();
+    });
+
+    densityButton.addEventListener("click", () => {
+      compact = !compact;
+      document.documentElement.style.setProperty("--row-height", compact ? "31px" : "43px");
+      document.querySelectorAll("td").forEach(cell => {
+        cell.style.paddingTop = compact ? "3px" : "";
+        cell.style.paddingBottom = compact ? "3px" : "";
+      });
+      densityButton.classList.toggle("active", compact);
+      densityButton.querySelector(".button-label").textContent = compact ? "Comfortable" : "Compact";
+    });
+
+    document.getElementById("resetButton").addEventListener("click", () => {
+      searchInput.value = "";
+      categoryFilter.value = "";
+      unitFilter.value = "";
+      calculatorOnly = false;
+      calcOnlyButton.classList.remove("active");
+      calcOnlyButton.setAttribute("aria-pressed", "false");
+      sortState = { key: "id", direction: 1 };
+      document.querySelectorAll(".sort-mark").forEach(mark => mark.textContent = "↕");
+      render();
+      showToast("Filters reset");
+    });
+
+    document.getElementById("cycleCategory").addEventListener("click", () => {
+      const currentIndex = ["", ...categories].indexOf(categoryFilter.value);
+      const nextIndex = (currentIndex + 1) % (categories.length + 1);
+      categoryFilter.value = ["", ...categories][nextIndex];
+      render();
+      showToast(categoryFilter.value || "Showing all categories");
+    });
+
+    document.getElementById("exportButton").addEventListener("click", () => {
+      const headers = ["ID","Category","Formula Name","Symbolic Formula","Variables & Units","Result Unit","Excel Formula Example","Design Relevance","Typical Range / Example","Reference"];
+      const keys = ["id","category","name","formula","variables","unit","excel","relevance","range","reference"];
+      const quote = value => `"${String(value ?? "").replace(/"/g, '""')}"`;
+      const csv = [
+        headers.map(quote).join(","),
+        ...visibleRows.map(row => keys.map(key => quote(row[key])).join(","))
+      ].join("\r\n");
+
+      const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "cnc-engineering-formulas.csv";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      showToast(`Exported ${visibleRows.length} formulas`);
+    });
+
+    document.getElementById("printButton").addEventListener("click", () => window.print());
+    document.getElementById("drawerClose").addEventListener("click", closeDrawer);
+    overlay.addEventListener("click", closeDrawer);
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && drawer.classList.contains("open")) closeDrawer();
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "f") {
+        event.preventDefault();
+        searchInput.focus();
+        searchInput.select();
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
